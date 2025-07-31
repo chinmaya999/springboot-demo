@@ -37,10 +37,13 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo "Deploying application..."
-                // Example: Copy JAR to remote server or run locally
-                // sh 'scp target/*.jar user@server:/opt/app/'
-                // Or run the app (optional)
-                // sh 'java -jar target/*.jar &'
+                sh '''
+                # Stop previous instance if running
+                pkill -f springboot-demo-0.0.1-SNAPSHOT.jar || true
+
+                # Run the new JAR in the background
+                nohup java -jar target/springboot-demo-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
+                '''
             }
         }
     }
